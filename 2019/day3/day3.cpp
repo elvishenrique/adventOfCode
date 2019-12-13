@@ -1,5 +1,7 @@
+#include <cstdio>
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 #include <vector>
 #include <string>
 
@@ -14,20 +16,28 @@ struct point {
         switch (direction[0]) {
             case 'U':
                 y += std::stoi(direction.substr(1));
+                break;
             case 'D':
                 y -= std::stoi(direction.substr(1));
+                break;
             case 'L':
                 x -= std::stoi(direction.substr(1));
+                break;
             case 'R':
                 x += std::stoi(direction.substr(1));
+                break;
         }
 
-        return *this;
+        return point(x,y);
     }
 };
 
 int dist (const point& p) {
-    return p.x + p.y;
+    return std::abs(p.x) + std::abs(p.y);
+}
+
+bool isOrigin(point p) {
+    return p.x == 0 && p.y == 0;
 }
 
 struct segment {
@@ -70,6 +80,10 @@ void print(int value) {
     std::cout << value << "\n";
 }
 
+void print(point p) {
+    std::printf("(%d, %d)\n", p.x, p.y);
+}
+
 int main() {
     // std::string str;
 
@@ -81,20 +95,25 @@ int main() {
 
     std::vector<segment> wire1;
     std::vector<segment> wire2;
+    //bool debug = true;
     point curpos(0,0);
 
     std::string line;
 
     std::cin >> line;
     while (line[0] != 's') {
-        wire1.emplace_back(curpos, curpos.move(line));
+        point a = curpos;
+        point b = curpos.move(line);
+        wire1.emplace_back(a, b);
         std::cin >> line;
     }
 
     curpos = point(0,0);
     std::cin >> line;
     while (line[0] != 's') {
-        wire2.emplace_back(curpos, curpos.move(line));
+        point a = curpos;
+        point b = curpos.move(line);
+        wire2.emplace_back(a, b);
         std::cin >> line;
     }
 
@@ -102,12 +121,23 @@ int main() {
     for (const auto& seg1 : wire1) {
         for (const auto& seg2 : wire2) {
             point p;
-            print(seg2.a.x);
-            if (intersect(seg1, seg2, &p))
-                inter.push_back(p);
+            if (intersect(seg1, seg2, &p)) {
+                if (!isOrigin(p))
+                    inter.push_back(p);
+                if (dist(p) == 173) {
+                    print(seg1.a);
+                    print(seg1.b);
+                    print(seg2.a);
+                    print(seg2.b);
+                    //print(p);
+                }
+            }
         }
     }
 
-    std::vector<point>::iterator it = std::min_element(inter.begin(), inter.end(), [] (const point& p, const point& q) { return dist(p) < dist(q); });
-    print(dist(*it));
+    if (inter.size() > 0) {
+        std::vector<point>::iterator it = std::min_element(inter.begin(), inter.end(), [] (const point& p, const point& q) { return dist(p) < dist(q); });
+        print(dist(*it));
+        print(*it);
+    }
 }
