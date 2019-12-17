@@ -48,7 +48,7 @@ struct segment {
 };
 
 bool isHorizontal(segment r) {
-    return r.a.x == r.b.x;
+    return r.a.y == r.b.y;
 }
 
 bool intersect(segment r, segment s, point* p) {
@@ -56,9 +56,12 @@ bool intersect(segment r, segment s, point* p) {
         return false;
 
     if (isHorizontal(r)) {
-        if (s.a.y <= std::max(r.a.y, r.b.y) && s.a.y >= std::min(r.a.y, r.b.y)) {
+        if (s.a.x <= std::max(r.a.x, r.b.x)
+            && s.a.x >= std::min(r.a.x, r.b.x)
+            && r.a.y <= std::max(s.a.y, s.b.y)
+            && r.a.y >= std::min(s.a.y, s.b.y)) {
             if (p != nullptr)
-                *p = point(r.a.x, s.a.y);
+                *p = point(s.a.x, r.a.y);
 
             return true;
         }
@@ -66,9 +69,12 @@ bool intersect(segment r, segment s, point* p) {
         return false;
     }
 
-    if (s.a.x <= std::max(r.a.x, r.b.x) && s.a.x >= std::min(r.a.x, r.b.x)) {
+    if (s.a.y <= std::max(r.a.y, r.b.y)
+        && s.a.y >= std::min(r.a.y, r.b.y)
+        && r.a.x <= std::max(s.a.x, s.b.x)
+        && r.a.x >= std::min(s.a.x, s.b.x)) {
         if (p != nullptr)
-            *p = point(s.a.x, r.a.y);
+            *p = point(r.a.x, s.a.y);
 
         return true;
     }
@@ -124,7 +130,7 @@ int main() {
             if (intersect(seg1, seg2, &p)) {
                 if (!isOrigin(p))
                     inter.push_back(p);
-                if (dist(p) == 173) {
+                if (dist(p) == 374) {
                     print(seg1.a);
                     print(seg1.b);
                     print(seg2.a);
@@ -139,5 +145,7 @@ int main() {
         std::vector<point>::iterator it = std::min_element(inter.begin(), inter.end(), [] (const point& p, const point& q) { return dist(p) < dist(q); });
         print(dist(*it));
         print(*it);
+    } else {
+        printf("error\n");
     }
 }
