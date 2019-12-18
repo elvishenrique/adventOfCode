@@ -12,8 +12,6 @@ def complete(tape, index):
 def getparam(tape, pos, rel):
     instr = tape[pos][-1]
     param1 = ['3', '4', '9']
-    param2 = ['5', '6']
-    param3 = ['1', '2', '7', '8']
 
     index = -1
     if len(tape[pos]) < 3 or tape[pos][-3] == '0': #position
@@ -150,17 +148,6 @@ def proc(tape, play):
             print('blocks: '+ str(blocks(scr)))
             print('score: '+ score)
             bp = ballpos(scr)
-            # g.write('\n')
-            # g.write('blocks: '+ str(blocks(scr)))
-            # g.write('\n')
-            # g.write('score: '+ score)
-            # s = input()
-            # if s == 'a':
-            #     tape[i] = '-1'
-            # elif s == 's':
-            #     tape[i] = '0'
-            # elif s == 'd':
-            #     tape[i] = '1'
             tape[i] = decision(bp, oldballpos, paddlepos(scr))
             oldballpos = bp
             pos += 2
