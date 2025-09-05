@@ -2,3 +2,4 @@
 *.out
 2022/day*/target/
 2024/day*/target/
+input*
